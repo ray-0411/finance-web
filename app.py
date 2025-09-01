@@ -8,6 +8,9 @@ from finance.add_transaction import add_transaction_page
 from finance.manage_categories import manage_categories_page
 from finance.get_transaction import get_transaction_page
 
+from work.work_main import work_page
+from work.add_event import add_event_page
+
 
 
 
@@ -15,7 +18,8 @@ from finance.get_transaction import get_transaction_page
 st.sidebar.title("📌 選單")
 
 # 👉 在這裡設定初始分頁（方便開發）
-DEFAULT_PAGE = "新增交易"
+DEFAULT_PAGE = "新增事件"
+DEFAULT_SIDEBAR = "work"
 
 # 全域變數
 if "page" not in st.session_state:
@@ -23,7 +27,7 @@ if "page" not in st.session_state:
 if "user_id" not in st.session_state:
     st.session_state.user_id = 1  
 if "sidebar_page" not in st.session_state:
-    st.session_state.sidebar_page = "main"
+    st.session_state.sidebar_page = DEFAULT_SIDEBAR
 
 # 頁面切換左側欄
 if st.session_state.sidebar_page == "main":
@@ -49,6 +53,12 @@ elif st.session_state.sidebar_page == "finance":
         st.session_state.sidebar_page = "main"
         st.rerun()
 elif st.session_state.sidebar_page == "work":
+    if st.sidebar.button("🛠️ 工作區塊"):
+        st.session_state.page = "工作區塊"
+        st.rerun()
+    if st.sidebar.button("➕ 新增事件"):
+        st.session_state.page = "新增事件"
+        st.rerun()
     if st.sidebar.button("🔙 回主選單"):
         st.session_state.sidebar_page = "main"
         st.rerun()
@@ -65,5 +75,6 @@ elif st.session_state.sidebar_page == "finance":
         manage_categories_page()
 elif st.session_state.sidebar_page == "work":
     if st.session_state.page == "工作區塊":
-        #work_page()
-        pass
+        work_page()
+    elif st.session_state.page == "新增事件":
+        add_event_page()
