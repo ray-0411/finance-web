@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import time
-from db import get_connection
+from db import connect_sql_finance
 
 
 def manage_categories_page():
@@ -12,11 +12,6 @@ def manage_categories_page():
         st.warning("⚠️ 請先選擇使用者")
         return
 
-    # 讀取所有分類
-    # conn = get_connection()
-    # df = pd.read_sql("SELECT * FROM categories WHERE user_id = ? AND is_active = 1", conn, params=(user_id,))
-    # conn.close()
-    # st.dataframe(df)
 
     # 大分類
     cat1_df = get_categories(None)
@@ -93,7 +88,7 @@ def manage_categories_page():
 
 
 def get_categories(parent_id=None):
-    conn = get_connection()
+    conn = connect_sql_finance()
     if parent_id is not None:
         df = pd.read_sql(f"SELECT id, name FROM categories WHERE parent_id = {parent_id} AND is_active = 1", conn)
     else:
@@ -103,7 +98,7 @@ def get_categories(parent_id=None):
 
 
 def insert_category(name, parent_id=None):
-    conn = get_connection()
+    conn = connect_sql_finance()
     cursor = conn.cursor()
 
     sql = """
@@ -123,7 +118,7 @@ def insert_category(name, parent_id=None):
 def soft_delete_category(category_id, conn=None):
     close_conn = False
     if conn is None:
-        conn = get_connection()
+        conn = connect_sql_finance()
         close_conn = True
     cursor = conn.cursor()
 

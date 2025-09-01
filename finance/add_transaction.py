@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import date
 
-from db import get_connection
+from db import connect_sql_finance
 
 def add_transaction_page():
     
@@ -44,14 +44,14 @@ def add_transaction_page():
 
 # ========== 輔助函式 ==========
 def get_lookup(table, id_col="id", name_col="name"):
-    conn = get_connection()
+    conn = connect_sql_finance()
     df = pd.read_sql(f"SELECT {id_col}, {name_col} FROM {table}", conn)
     conn.close()
     return df
 
 def get_categories(level=1, parent_name=None):
     user_id = st.session_state.user_id
-    conn = get_connection()
+    conn = connect_sql_finance()
     sql = "SELECT id, name, parent_id FROM categories WHERE user_id = ? AND is_active = 1"
     df = pd.read_sql(sql, conn, params=(user_id,))
     conn.close()
@@ -76,7 +76,7 @@ def get_categories(level=1, parent_name=None):
 
 # ========== 新增交易 ==========
 def insert_transaction(user_id, category_id, account_id, amount, tx_type, date_value, note):
-    conn = get_connection()
+    conn = connect_sql_finance()
     cursor = conn.cursor()
     sql = """
         INSERT INTO transactions (user_id, category_id, account_id, amount, type, date, note)

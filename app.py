@@ -2,6 +2,8 @@ import streamlit as st
 
 #streamlit run app.py
 
+from main.main_page import main_page
+
 from finance.add_transaction import add_transaction_page
 from finance.manage_categories import manage_categories_page
 from finance.get_transaction import get_transaction_page
@@ -15,6 +17,7 @@ st.sidebar.title("📌 選單")
 # 👉 在這裡設定初始分頁（方便開發）
 DEFAULT_PAGE = "新增交易"
 
+# 全域變數
 if "page" not in st.session_state:
     st.session_state.page = DEFAULT_PAGE
 if "user_id" not in st.session_state:
@@ -22,12 +25,15 @@ if "user_id" not in st.session_state:
 if "sidebar_page" not in st.session_state:
     st.session_state.sidebar_page = "main"
 
+# 頁面切換左側欄
 if st.session_state.sidebar_page == "main":
     if st.sidebar.button("💰 記帳區塊"):
         st.session_state.sidebar_page = "finance"
+        st.session_state.page = "新增交易"
         st.rerun()
     if st.sidebar.button("🛠️ 工作區塊"):
         st.session_state.sidebar_page = "work"
+        st.session_state.page = "工作區塊"
         st.rerun()
 elif st.session_state.sidebar_page == "finance":
     if st.sidebar.button("➕ 新增交易"):
@@ -49,8 +55,7 @@ elif st.session_state.sidebar_page == "work":
 
 # --- 頁面切換 ---
 if st.session_state.sidebar_page == "main":
-    #main_page()
-    pass
+    main_page()
 elif st.session_state.sidebar_page == "finance":
     if st.session_state.page == "新增交易":
         add_transaction_page()

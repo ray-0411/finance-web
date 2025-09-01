@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from db import get_connection
+from db import connect_sql_finance
 
 
 def get_transaction_page():
@@ -10,7 +10,7 @@ def get_transaction_page():
 
 # ========== 讀取交易 ==========
 def get_transactions():
-    conn = get_connection()
+    conn = connect_sql_finance()
     df = pd.read_sql("""
         SELECT t.id, u.username AS user, c.name AS category, a.name AS account,
             t.amount, t.type, t.date, t.note, t.created_at
