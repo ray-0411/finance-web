@@ -10,7 +10,7 @@ def work():
     cursor.execute("""
         INSERT INTO category (name, parent_id)
         VALUES (?, ?)
-    """, ("作業", None))
+    """, ("家庭", None))
     conn.commit()
 
     # 在這裡執行你的資料庫操作
