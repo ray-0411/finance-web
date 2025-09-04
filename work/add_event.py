@@ -20,7 +20,7 @@ def add_event_page():
         category_name = st.selectbox("分類", df["name"].tolist())
         category_id = df.loc[df["name"] == category_name, "id"].iloc[0]
 
-        repeat_type = st.selectbox("重複類型", ["none", "daily", "weekly", "monthly"])
+        repeat_type = st.selectbox("重複類型", ["none", "day", "week", "month"])
         repeat_value = st.number_input("重複值", min_value=1, step=1, value=1)
 
         priority = st.slider("重要度(1-5 5重要 1不重要)", 1, 5, 3)

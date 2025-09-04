@@ -10,6 +10,7 @@ from finance.get_transaction import get_transaction_page
 
 from work.work_main import work_page
 from work.add_event import add_event_page
+from work.refresh_work import generate_main_from_events
 
 
 
@@ -55,6 +56,7 @@ elif st.session_state.sidebar_page == "finance":
 elif st.session_state.sidebar_page == "work":
     if st.sidebar.button("🛠️ 工作區塊"):
         st.session_state.page = "工作區塊"
+        generate_main_from_events()
         st.rerun()
     if st.sidebar.button("➕ 新增事件"):
         st.session_state.page = "新增事件"
