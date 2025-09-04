@@ -11,7 +11,7 @@ def get_tasks():
         SELECT m.id, e.title, m.occur_date, m.is_completed
         FROM main m
         JOIN events e ON m.event_id = e.id
-        WHERE m.is_deleted = 0
+        WHERE m.is_stop = 0
         ORDER BY m.occur_date ASC
     """, conn)
     conn.close()

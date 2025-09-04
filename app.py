@@ -11,6 +11,7 @@ from finance.get_transaction import get_transaction_page
 from work.work_main import work_page
 from work.add_event import add_event_page
 from work.refresh_work import generate_main_from_events
+from work.event_list import show_events_page
 
 
 
@@ -61,6 +62,9 @@ elif st.session_state.sidebar_page == "work":
     if st.sidebar.button("➕ 新增事件"):
         st.session_state.page = "新增事件"
         st.rerun()
+    if st.sidebar.button("📅 事件列表"):
+        st.session_state.page = "事件列表"
+        st.rerun()
     if st.sidebar.button("🔙 回主選單"):
         st.session_state.sidebar_page = "main"
         st.rerun()
@@ -80,3 +84,5 @@ elif st.session_state.sidebar_page == "work":
         work_page()
     elif st.session_state.page == "新增事件":
         add_event_page()
+    elif st.session_state.page == "事件列表":
+        show_events_page()

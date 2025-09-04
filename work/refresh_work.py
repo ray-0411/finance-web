@@ -7,7 +7,7 @@ def generate_main_from_events(days_ahead=30):
     cursor = conn.cursor()
 
     # 抓所有未刪除事件
-    cursor.execute("SELECT id, date, repeat_type, repeat_value FROM events WHERE `delete` = 0")
+    cursor.execute("SELECT id, date, repeat_type, repeat_value FROM events WHERE stop = 0")
     events = cursor.fetchall()
 
     today = date.today()
