@@ -33,7 +33,7 @@ def add_event_page():
                 cursor = conn.cursor()
                 cursor.execute("""
                     INSERT INTO events (title, description, date, category_id, repeat_type, repeat_value, priority)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, (title, description, event_date, category_id, repeat_type, repeat_value, priority))
                 conn.commit()
                 conn.close()

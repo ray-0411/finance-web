@@ -11,7 +11,7 @@ def get_tasks():
         SELECT m.id, e.title, m.occur_date, m.is_completed
         FROM main m
         JOIN events e ON m.event_id = e.id
-        WHERE m.is_stop = 0
+        WHERE m.is_stop = FALSE
         ORDER BY m.occur_date ASC
     """, conn)
     conn.close()
@@ -20,7 +20,7 @@ def get_tasks():
 def update_task_status(task_id, status):
     conn = connect_sql_work()
     cursor = conn.cursor()
-    cursor.execute("UPDATE main SET is_completed = ? WHERE id = ?", (status, task_id))
+    cursor.execute("UPDATE main SET is_completed = %s WHERE id = %s", (status, task_id))
     conn.commit()
     conn.close()
 

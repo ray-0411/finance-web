@@ -24,8 +24,8 @@ def show_events_page():
         return
 
     # 區分「有效事件」和「過期/刪除事件」
-    active_events = df[(df["stop"] == 0) & (pd.to_datetime(df["date"]) >= pd.to_datetime(today))]
-    expired_or_deleted = df[(df["stop"] == 1) | (pd.to_datetime(df["date"]) < pd.to_datetime(today))]
+    active_events = df[(df["stop"] == False) & (pd.to_datetime(df["date"]) >= pd.to_datetime(today))]
+    expired_or_deleted = df[(df["stop"] == True) | (pd.to_datetime(df["date"]) < pd.to_datetime(today))]
 
     # 顯示有效事件
     st.subheader("✅ 有效事件")
@@ -44,7 +44,7 @@ def show_events_page():
     st.subheader("🗑️ 停用事件")
 
     conn = connect_sql_work()
-    df_events = pd.read_sql("SELECT id, title, date FROM events WHERE stop = 0 ORDER BY date ASC", conn)
+    df_events = pd.read_sql("SELECT id, title, date FROM events WHERE stop = FALSE ORDER BY date ASC", conn)
     conn.close()
 
     if "delete_event_mode" not in st.session_state:
@@ -69,7 +69,7 @@ def show_events_page():
                         delete_id = int(st.session_state.delete_event_target.split("]")[0][1:])
                         conn = connect_sql_work()
                         cursor = conn.cursor()
-                        cursor.execute("UPDATE events SET stop = 1 WHERE id = ?", (delete_id,))
+                        cursor.execute("UPDATE events SET stop = TRUE WHERE id = %s", (delete_id,))
                         conn.commit()
                         conn.close()
                         st.success(f"🗑️ 已停用事件 ID {delete_id}")
@@ -116,7 +116,7 @@ def show_events_page():
                     delete_id = int(st.session_state.remove_event_target.split("]")[0][1:])
                     conn = connect_sql_work()
                     cursor = conn.cursor()
-                    cursor.execute("DELETE FROM events WHERE id = ?", (delete_id,))
+                    cursor.execute("DELETE FROM events WHERE id = %s", (delete_id,))
                     conn.commit()
                     conn.close()
                     st.success(f"🗑️ 已刪除事件 ID {delete_id}")

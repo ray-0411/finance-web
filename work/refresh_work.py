@@ -7,7 +7,7 @@ def generate_main_from_events(days_ahead=30):
     cursor = conn.cursor()
 
     # 抓所有未刪除事件
-    cursor.execute("SELECT id, date, repeat_type, repeat_value FROM events WHERE stop = 0")
+    cursor.execute("SELECT id, date, repeat_type, repeat_value FROM events WHERE stop = False")
     events = cursor.fetchall()
 
     today = date.today()
@@ -19,7 +19,7 @@ def generate_main_from_events(days_ahead=30):
         if repeat_type == "none":
             if today <= start_date <= end_date:
                 cursor.execute(
-                    "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (?, ?)",
+                    "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
                     (event_id, start_date)
                 )
 
@@ -29,7 +29,7 @@ def generate_main_from_events(days_ahead=30):
             while current <= end_date:
                 if current >= today:
                     cursor.execute(
-                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (?, ?)",
+                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
                         (event_id, current)
                     )
                 current += timedelta(days=repeat_value)
@@ -39,7 +39,7 @@ def generate_main_from_events(days_ahead=30):
             while current <= end_date:
                 if current >= today:
                     cursor.execute(
-                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (?, ?)",
+                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
                         (event_id, current)
                     )
                 current += timedelta(weeks=repeat_value)
@@ -50,7 +50,7 @@ def generate_main_from_events(days_ahead=30):
             while current <= end_date:
                 if current >= today:
                     cursor.execute(
-                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (?, ?)",
+                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
                         (event_id, current)
                     )
 

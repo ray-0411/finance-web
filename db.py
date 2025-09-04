@@ -5,5 +5,14 @@ import sqlite3
 def connect_sql_finance():
     return sqlite3.connect("finance.db", check_same_thread=False)
 
+# def connect_sql_work():
+#     return sqlite3.connect("task.db", check_same_thread=False)
+
+import sqlalchemy
+
+DATABASE_URL = "postgresql://postgres:Ray0411ray@db.mcutdzuavjhjalkumynk.supabase.co:5432/postgres"
+
+engine = sqlalchemy.create_engine(DATABASE_URL)
+
 def connect_sql_work():
-    return sqlite3.connect("task.db", check_same_thread=False)
+    return engine.raw_connection()
