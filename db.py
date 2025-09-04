@@ -9,8 +9,11 @@ def connect_sql_finance():
 #     return sqlite3.connect("task.db", check_same_thread=False)
 
 import sqlalchemy
+import os
 
-DATABASE_URL = "postgresql://postgres:Ray0411ray@db.mcutdzuavjhjalkumynk.supabase.co:5432/postgres"
+DATABASE_URL = os.environ["DATABASE_URL"]
+
+#DATABASE_URL = "postgresql://postgres:Ray0411ray@db.mcutdzuavjhjalkumynk.supabase.co:5432/postgres"
 
 engine = sqlalchemy.create_engine(DATABASE_URL)
 
