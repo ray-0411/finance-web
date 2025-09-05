@@ -11,13 +11,13 @@ def connect_sql_finance():
 import sqlalchemy
 import os
 
-#DATABASE_URL = os.environ["DATABASE_URL"]
+DATABASE_WORK_URL = os.environ["DATABASE_WORK_URL"]
 
-DATABASE_URL="postgresql://postgres.mcutdzuavjhjalkumynk:Ray0411ray@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?sslmode=require"
+#DATABASE_WORK_URL="postgresql://postgres.mcutdzuavjhjalkumynk:Ray0411ray@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?sslmode=require"
 
 
 
-engine = sqlalchemy.create_engine(DATABASE_URL)
+engine = sqlalchemy.create_engine(DATABASE_WORK_URL)
 
 def connect_sql_work():
     return engine.raw_connection()
