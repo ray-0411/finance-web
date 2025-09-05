@@ -42,14 +42,14 @@ def generate_main_from_events(days_ahead=30):
             # 隔幾天
             current = start_date
             while current <= end_date:
-                if current >= today or expire:
+                if (current >= today) or expire:
                     cursor.execute(
                         """
                         INSERT INTO main (event_id, occur_date)
                         VALUES (%s, %s)
                         ON CONFLICT (event_id, occur_date) DO NOTHING
                         """,
-                        (event_id, start_date)
+                        (event_id, current)
                     )
                 current += timedelta(days=repeat_value)
 
@@ -63,7 +63,7 @@ def generate_main_from_events(days_ahead=30):
                         VALUES (%s, %s)
                         ON CONFLICT (event_id, occur_date) DO NOTHING
                         """,
-                        (event_id, start_date)
+                        (event_id, current)
                     )
                 current += timedelta(weeks=repeat_value)
 

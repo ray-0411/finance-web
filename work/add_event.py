@@ -10,7 +10,7 @@ def add_event_page():
     with st.form("add_event_form", clear_on_submit=True):
         title = st.text_input("事件標題")
         description = st.text_area("事件描述（選填）")
-        event_date = st.date_input("開始日期", min_value=date.today())
+        event_date = st.date_input("開始日期", value=date.today())
         event_time = st.text_input("事件時間")
 
         # 分類選擇

@@ -8,10 +8,11 @@ from db import connect_sql_work
 def get_tasks():
     conn = connect_sql_work()
     df = pd.read_sql("""
-        SELECT m.id, e.title, e.time, m.occur_date, m.is_completed
+        SELECT m.id, e.title, e.time, e.expire, m.occur_date, m.is_completed
         FROM main m
         JOIN events e ON m.event_id = e.id
         WHERE m.is_stop = FALSE
+            AND NOT (m.occur_date < CURRENT_DATE AND e.expire = TRUE AND m.is_completed = TRUE)
         ORDER BY m.occur_date ASC
     """, conn)
     conn.close()
