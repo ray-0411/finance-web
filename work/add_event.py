@@ -11,6 +11,7 @@ def add_event_page():
         title = st.text_input("事件標題")
         description = st.text_area("事件描述（選填）")
         event_date = st.date_input("開始日期", min_value=date.today())
+        event_time = st.text_input("事件時間")
 
         # 分類選擇
         conn = connect_sql_work()
@@ -23,6 +24,7 @@ def add_event_page():
         repeat_value = st.number_input("重複值", min_value=1, step=1, value=1)
 
         priority = st.slider("重要度(5重要 1不重要)", 1, 5, 3)
+        expire_val = st.checkbox("是否過期依舊提醒", value=False)
 
         submitted = st.form_submit_button("新增")
         if submitted:
@@ -32,9 +34,9 @@ def add_event_page():
                 conn = connect_sql_work()
                 cursor = conn.cursor()
                 cursor.execute("""
-                    INSERT INTO events (title, description, date, category_id, repeat_type, repeat_value, priority)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """, (title, description, event_date, category_id, repeat_type, repeat_value, priority))
+                    INSERT INTO events (title, description, date, time, category_id, repeat_type, repeat_value, priority, expire)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (title, description, event_date, event_time, category_id, repeat_type, repeat_value, priority, expire_val))
                 conn.commit()
                 conn.close()
                 st.success(f"✅ 已新增事件：{title}")

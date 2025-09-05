@@ -8,7 +8,7 @@ from db import connect_sql_work
 def get_tasks():
     conn = connect_sql_work()
     df = pd.read_sql("""
-        SELECT m.id, e.title, m.occur_date, m.is_completed
+        SELECT m.id, e.title, e.time, m.occur_date, m.is_completed
         FROM main m
         JOIN events e ON m.event_id = e.id
         WHERE m.is_stop = FALSE
@@ -28,6 +28,15 @@ def work_page():
     st.markdown(
         """
         <style>
+        div[data-testid="stCheckbox"] > label {
+            display: flex;
+            align-items: center;   /* 垂直置中 */
+        }
+        div[data-testid="stCheckbox"] input[type="checkbox"] {
+            transform: scale(1.5);   /* 放大 1.5 倍 */
+            margin-right: 10px;      /* 和文字的距離 */
+            vertical-align: middle;  /* 和文字置中對齊 */
+        }
         /* 把 checkbox 文字字體放大 */
         div[data-testid="stCheckbox"] label p {
             font-size: 24px !important;
@@ -60,7 +69,10 @@ def work_page():
 
         for _, row in group.iterrows():
             # 顯示文字
-            label = row['title']
+            if row['time']:
+                label = row['time'] + " " + row['title']
+            else:
+                label = row['title']
             if row['is_completed']:
                 label = f"~~{label}~~"
 
@@ -72,5 +84,5 @@ def work_page():
 
             # 如果勾選狀態變動 → 更新 DB
             if checked != bool(row['is_completed']):
-                update_task_status(row['id'], int(checked))
+                update_task_status(row['id'], checked)
                 st.rerun()

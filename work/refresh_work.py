@@ -7,40 +7,63 @@ def generate_main_from_events(days_ahead=30):
     cursor = conn.cursor()
 
     # 抓所有未刪除事件
-    cursor.execute("SELECT id, date, repeat_type, repeat_value FROM events WHERE stop = False")
+    cursor.execute("SELECT id, date, repeat_type, repeat_value, expire FROM events WHERE stop = False")
     events = cursor.fetchall()
 
     today = date.today()
     end_date = today + timedelta(days=days_ahead)
 
-    for event_id, start_date, repeat_type, repeat_value in events:
-        start_date = date.fromisoformat(start_date)  # 轉換成 date
+    for event_id, start_date, repeat_type, repeat_value, expire in events:
+        #start_date = date.fromisoformat(start_date)  # 轉換成 date
 
         if repeat_type == "none":
-            if today <= start_date <= end_date:
-                cursor.execute(
-                    "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
-                    (event_id, start_date)
-                )
+            if expire:
+                if start_date <= end_date:
+                    cursor.execute(
+                        """
+                        INSERT INTO main (event_id, occur_date)
+                        VALUES (%s, %s)
+                        ON CONFLICT (event_id, occur_date) DO NOTHING
+                        """,
+                        (event_id, start_date)
+                    )
+            else:
+                if today <= start_date <= end_date:
+                    cursor.execute(
+                        """
+                        INSERT INTO main (event_id, occur_date)
+                        VALUES (%s, %s)
+                        ON CONFLICT (event_id, occur_date) DO NOTHING
+                        """,
+                        (event_id, start_date)
+                    )
 
         elif repeat_type == "day":
             # 隔幾天
             current = start_date
             while current <= end_date:
-                if current >= today:
+                if current >= today or expire:
                     cursor.execute(
-                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
-                        (event_id, current)
+                        """
+                        INSERT INTO main (event_id, occur_date)
+                        VALUES (%s, %s)
+                        ON CONFLICT (event_id, occur_date) DO NOTHING
+                        """,
+                        (event_id, start_date)
                     )
                 current += timedelta(days=repeat_value)
 
         elif repeat_type == "week":
             current = start_date
             while current <= end_date:
-                if current >= today:
+                if current >= today or expire:
                     cursor.execute(
-                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
-                        (event_id, current)
+                        """
+                        INSERT INTO main (event_id, occur_date)
+                        VALUES (%s, %s)
+                        ON CONFLICT (event_id, occur_date) DO NOTHING
+                        """,
+                        (event_id, start_date)
                     )
                 current += timedelta(weeks=repeat_value)
 
@@ -48,9 +71,13 @@ def generate_main_from_events(days_ahead=30):
             current = start_date
             anchor_day = start_date.day  # 錨定起始日的「日」
             while current <= end_date:
-                if current >= today:
+                if current >= today or expire:
                     cursor.execute(
-                        "INSERT OR IGNORE INTO main (event_id, occur_date) VALUES (%s, %s)",
+                        """
+                        INSERT INTO main (event_id, occur_date)
+                        VALUES (%s, %s)
+                        ON CONFLICT (event_id, occur_date) DO NOTHING
+                        """,
                         (event_id, current)
                     )
 
