@@ -10,8 +10,12 @@ def connect_sql_finance():
 
 import sqlalchemy
 import os
-from dotenv import load_dotenv
-load_dotenv()
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 DATABASE_WORK_URL = os.environ["DATABASE_WORK_URL"]
 
