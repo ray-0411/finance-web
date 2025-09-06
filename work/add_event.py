@@ -1,13 +1,14 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
+import time
 
 from db import connect_sql_work 
 
 def add_event_page():
     st.title("➕ 新增事件")
 
-    with st.form("add_event_form", clear_on_submit=True):
+    with st.form("add_event_form"):
         title = st.text_input("事件標題")
         description = st.text_area("事件描述（選填）")
         event_date = st.date_input("開始日期", value=date.today())
@@ -15,7 +16,7 @@ def add_event_page():
 
         # 分類選擇
         conn = connect_sql_work()
-        df = pd.read_sql(f"SELECT id, name FROM category", conn)
+        df = pd.read_sql(f"SELECT id, name FROM category WHERE is_deleted = FALSE", conn)
         conn.close()
         category_name = st.selectbox("分類", df["name"].tolist())
         category_id = int(df.loc[df["name"] == category_name, "id"].iloc[0])
@@ -40,3 +41,5 @@ def add_event_page():
                 conn.commit()
                 conn.close()
                 st.success(f"✅ 已新增事件：{title}")
+                time.sleep(0.5)
+                st.rerun()
