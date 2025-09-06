@@ -87,7 +87,7 @@ elif st.session_state.sidebar_page == "work":
     if st.session_state.page == "工作區塊":
         work_page()
     elif st.session_state.page == "新增事件":
-        add_event_page()
+        add_event_page(0)
     elif st.session_state.page == "事件列表":
         show_events_page()
     elif st.session_state.page == "分類管理":

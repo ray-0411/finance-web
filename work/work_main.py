@@ -78,7 +78,7 @@ def work_page():
         for _, row in group.iterrows():
             # 顯示文字
             if row['time']:
-                text = row['time'] + "  " + row['title']
+                text = row['time'] + "&nbsp;&nbsp;" + row['title']
             else:
                 text = row['title']
 
