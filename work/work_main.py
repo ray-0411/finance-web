@@ -3,17 +3,24 @@ import pandas as pd
 
 from db import connect_sql_work 
 
-
+priority_colors = {
+    5: "red",
+    4: "orange",
+    3: "black",
+    2: "green",
+    1: "blue"
+}
 
 def get_tasks():
     conn = connect_sql_work()
     df = pd.read_sql("""
-        SELECT m.id, e.title, e.time, e.expire, m.occur_date, m.is_completed
+        SELECT m.id, e.title, e.time, e.expire, e.priority, m.occur_date, m.is_completed
         FROM main m
         JOIN events e ON m.event_id = e.id
         WHERE m.is_stop = FALSE
             AND NOT (m.occur_date < CURRENT_DATE AND e.expire = TRUE AND m.is_completed = TRUE)
-        ORDER BY m.occur_date ASC
+            AND NOT (m.occur_date < CURRENT_DATE AND e.expire = FALSE)
+        ORDER BY m.occur_date ASC, e.priority DESC
     """, conn)
     conn.close()
     return df
@@ -71,19 +78,23 @@ def work_page():
         for _, row in group.iterrows():
             # 顯示文字
             if row['time']:
-                label = row['time'] + " " + row['title']
+                text = row['time'] + "  " + row['title']
             else:
-                label = row['title']
+                text = row['title']
+
+            color = priority_colors.get(row['priority'], "black")
+            
             if row['is_completed']:
-                label = f"~~{label}~~"
+                text_html = f"<span style='color:{color}; font-size:24px'><s>{text}</s></span>"
+            else:
+                text_html = f"<span style='color:{color}; font-size:24px'>{text}</span>"
 
-            checked = st.checkbox(
-                label,
-                value=bool(row['is_completed']),
-                key=f"task_{row['id']}"
-            )
+            col1, col2 = st.columns([0.1, 0.9])
+            with col1:
+                checked = st.checkbox("", value=bool(row['is_completed']), key=f"task_{row['id']}")
+            with col2:
+                st.markdown(text_html, unsafe_allow_html=True)
 
-            # 如果勾選狀態變動 → 更新 DB
             if checked != bool(row['is_completed']):
                 update_task_status(row['id'], checked)
                 st.rerun()

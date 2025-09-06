@@ -3,7 +3,7 @@ import pandas as pd
 from db import connect_sql_work
 
 def work_categories_page():
-    st.title("📂 分類管理（支援階層 + 軟刪除）")
+    st.title("📂 分類管理")
 
     # 1️⃣ 總表 (只顯示未刪除)
     conn = connect_sql_work()
