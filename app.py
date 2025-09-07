@@ -21,7 +21,7 @@ from work.work_category import work_categories_page
 st.sidebar.title("📌 選單")
 
 # 👉 在這裡設定初始分頁（方便開發）
-DEFAULT_PAGE = "新增事件"
+DEFAULT_PAGE = "工作區塊"
 DEFAULT_SIDEBAR = "work"
 
 # 全域變數
@@ -92,3 +92,5 @@ elif st.session_state.sidebar_page == "work":
         show_events_page()
     elif st.session_state.page == "分類管理":
         work_categories_page()
+    elif st.session_state.page == "編輯事件":
+        add_event_page(st.session_state.edit_event_id)

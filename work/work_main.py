@@ -14,7 +14,7 @@ priority_colors = {
 def get_tasks():
     conn = connect_sql_work()
     df = pd.read_sql("""
-        SELECT m.id, e.title, e.time, e.expire, e.priority, m.occur_date, m.is_completed
+        SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, m.occur_date, m.is_completed
         FROM main m
         JOIN events e ON m.event_id = e.id
         WHERE m.is_stop = FALSE
@@ -89,11 +89,16 @@ def work_page():
             else:
                 text_html = f"<span style='color:{color}; font-size:24px'>{text}</span>"
 
-            col1, col2 = st.columns([0.1, 0.9])
+            col1, col2, col3 = st.columns([0.1, 0.75, 0.15])
             with col1:
                 checked = st.checkbox("", value=bool(row['is_completed']), key=f"task_{row['id']}")
             with col2:
                 st.markdown(text_html, unsafe_allow_html=True)
+            with col3:
+                if st.button("✏️ 編輯", key=f"edit_{row['id']}"):
+                    st.session_state["page"] = "編輯事件"
+                    st.session_state["edit_event_id"] = row["event_id"]   # ⭐ 傳 event_id
+                    st.rerun()
 
             if checked != bool(row['is_completed']):
                 update_task_status(row['id'], checked)
