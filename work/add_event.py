@@ -91,9 +91,9 @@ def add_event_page(event_id = 0):
                     conn.close()
                     time.sleep(0.5)
                     generate_main_from_events()
-                    st.session_state.page = "工作區塊"
-                    st.rerun()    
-                    
+                    st.session_state.page = "work_工作區塊"
+                    st.rerun()
+
                 else:
                     cursor.execute("""
                         UPDATE events
