@@ -14,7 +14,8 @@ priority_colors = {
 def get_tasks():
     conn = connect_sql_work()
     df = pd.read_sql("""
-        SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, m.occur_date, m.is_completed, c.name AS category_name
+        SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, 
+            m.occur_date, m.is_completed, c.name AS category_name, e.score
         FROM main m
         JOIN events e ON m.event_id = e.id
         JOIN category c ON e.category_id = c.id
@@ -29,7 +30,20 @@ def get_tasks():
 def update_task_status(task_id, status):
     conn = connect_sql_work()
     cursor = conn.cursor()
-    cursor.execute("UPDATE main SET is_completed = %s WHERE id = %s", (status, task_id))
+    
+    if status:  # ✅ 勾選完成
+        cursor.execute("""
+            UPDATE main 
+            SET is_completed = %s, completed_date = CURRENT_DATE
+            WHERE id = %s
+        """, (status, task_id))
+    else:  # ❌ 取消完成
+        cursor.execute("""
+            UPDATE main 
+            SET is_completed = %s, completed_date = NULL
+            WHERE id = %s
+        """, (status, task_id))
+    
     conn.commit()
     conn.close()
 
@@ -87,19 +101,21 @@ def work_page():
 
         for _, row in group.iterrows():
             # 顯示文字
+            
+            text = ""
             if row['time']:
-                text = row['time'] + "&nbsp;&nbsp;" + row['title']
-            else:
-                text = row['title']
+                text = row['time'] + "&nbsp;&nbsp;" 
+            
+            text = text + row['title']
+            
+            if row['score'] and row['score'] > 0:
+                text = text + "&nbsp;&nbsp;" +f"({row['score']})"
 
             color = priority_colors.get(row['priority'], "black")
             
-            if row['is_completed']:
-                text_html = f"<span style='color:{color}; font-size:24px'><s>{text}</s></span>"
-            else:
-                text_html = f"<span style='color:{color}; font-size:24px'>{text}</span>"
 
             col1, col2, col3, col4 = st.columns([0.05, 0.65, 0.2, 0.1])
+            
 
             with col1:
                 checked = st.checkbox("", value=bool(row['is_completed']), key=f"task_{row['id']}")

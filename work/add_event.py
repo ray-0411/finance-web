@@ -21,7 +21,7 @@ def add_event_page(event_id = 0):
         conn = connect_sql_work()
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT id, title, description, date, time, category_id, repeat_type, repeat_value, priority, expire
+            SELECT id, title, description, date, time, category_id, repeat_type, repeat_value, priority, expire, score
             FROM events WHERE id = %s
         """, (event_id,))
         event = cursor.fetchone()
@@ -32,7 +32,7 @@ def add_event_page(event_id = 0):
             return
 
         (eid, title, description, event_date, event_time, category_id,
-        repeat_type, repeat_value, priority, expire) = event
+        repeat_type, repeat_value, priority, expire, score) = event
     else:
         # 新增模式 → 預設值
         eid = 0
@@ -45,6 +45,7 @@ def add_event_page(event_id = 0):
         repeat_value = 1
         priority = 3
         expire = False
+        score = 0
 
     with st.form("add_event_form"):
         title = st.text_input("事件標題",value=title)
@@ -65,7 +66,9 @@ def add_event_page(event_id = 0):
         repeat_value = st.number_input("重複值", min_value=1, step=1, value=repeat_value)
 
         priority = st.slider("重要度(5重要 1不重要)", 1, 5, priority)
+        score = st.number_input("工作分數", min_value=0, step=1, value=score)
         expire_val = st.checkbox("是否過期依舊提醒", value=expire)
+
 
         submitted = st.form_submit_button("新增" if eid == 0 else "更新")
         if submitted:
@@ -78,9 +81,11 @@ def add_event_page(event_id = 0):
                 if eid == 0:
                     
                     cursor.execute("""
-                        INSERT INTO events (title, description, date, time, category_id, repeat_type, repeat_value, priority, expire)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (title, description, event_date, event_time, category_id, repeat_type, repeat_value, priority, expire_val))
+                        INSERT INTO events (title, description, date, time, category_id, 
+                            repeat_type, repeat_value, priority, expire, score)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (title, description, event_date, event_time, category_id, 
+                            repeat_type, repeat_value, priority, expire_val, score))
                     st.success(f"✅ 已新增事件：{title}")
                     conn.commit()
                     conn.close()
@@ -94,11 +99,11 @@ def add_event_page(event_id = 0):
                         UPDATE events
                         SET title = %s, description = %s, date = %s, "time" = %s,
                             category_id = %s, repeat_type = %s, repeat_value = %s,
-                            priority = %s, expire = %s
+                            priority = %s, expire = %s, score = %s
                         WHERE id = %s
                     """, (title, description, event_date, event_time,
                         category_id, repeat_type, repeat_value,
-                        priority, expire_val, eid))
+                        priority, expire_val, score, eid))
                     st.success(f"✅ 已更新事件：{title}")
                     conn.commit()
                     conn.close()
