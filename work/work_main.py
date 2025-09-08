@@ -16,9 +16,9 @@ def get_tasks():
     df = pd.read_sql("""
         SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, 
             m.occur_date, m.is_completed, c.name AS category_name, e.score
-        FROM main m
-        JOIN events e ON m.event_id = e.id
-        JOIN category c ON e.category_id = c.id
+        FROM work_main m
+        JOIN work_events e ON m.event_id = e.id
+        JOIN work_category c ON e.category_id = c.id
         WHERE m.is_stop = FALSE
             AND NOT (m.occur_date < CURRENT_DATE AND e.expire = TRUE AND m.is_completed = TRUE)
             AND NOT (m.occur_date < CURRENT_DATE AND e.expire = FALSE)
@@ -33,13 +33,13 @@ def update_task_status(task_id, status):
     
     if status:  # ✅ 勾選完成
         cursor.execute("""
-            UPDATE main 
+            UPDATE work_main 
             SET is_completed = %s, completed_date = CURRENT_DATE
             WHERE id = %s
         """, (status, task_id))
     else:  # ❌ 取消完成
         cursor.execute("""
-            UPDATE main 
+            UPDATE work_main 
             SET is_completed = %s, completed_date = NULL
             WHERE id = %s
         """, (status, task_id))
@@ -65,13 +65,21 @@ def work_page():
             margin-right: 6px;
         }
         /* 控制按鈕大小和垂直對齊 */
-        div[data-testid="stButton"] button {
+        [data-testid="stAppViewContainer"] [data-testid="stButton"] button{
             height: 40px;
             margin: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             transform: translateY(8px);
+        }
+        [data-testid="stSidebar"] [data-testid="stButton"] button {
+            height: auto !important;
+            margin: initial !important;
+            display: initial !important;
+            align-items: initial !important;
+            justify-content: initial !important;
+            transform: none !important;
         }
         </style>
         """,

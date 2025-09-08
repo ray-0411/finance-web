@@ -9,8 +9,8 @@ def work_categories_page():
     conn = connect_sql_work()
     df = pd.read_sql("""
         SELECT c.id, c.name, p.name AS parent_name
-        FROM category c
-        LEFT JOIN category p ON c.parent_id = p.id
+        FROM work_category c
+        LEFT JOIN work_category p ON c.parent_id = p.id
         WHERE c.is_deleted = FALSE
         ORDER BY c.id
     """, conn)
@@ -38,7 +38,7 @@ def work_categories_page():
             else:
                 conn = connect_sql_work()
                 cursor = conn.cursor()
-                cursor.execute("INSERT INTO category (name, parent_id) VALUES (%s, %s)", (new_name, parent_id))
+                cursor.execute("INSERT INTO work_category (name, parent_id) VALUES (%s, %s)", (new_name, parent_id))
                 conn.commit()
                 conn.close()
                 st.success(f"✅ 已新增分類：{new_name}")
@@ -56,7 +56,7 @@ def work_categories_page():
             conn = connect_sql_work()
             cursor = conn.cursor()
             # 軟刪除
-            cursor.execute("UPDATE category SET is_deleted = TRUE WHERE id = %s", (delete_id,))
+            cursor.execute("UPDATE work_category SET is_deleted = TRUE WHERE id = %s", (delete_id,))
             conn.commit()
             conn.close()
             st.success(f"🗑️ 已軟刪除分類：{delete_name}")

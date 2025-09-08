@@ -7,7 +7,7 @@ def generate_main_from_events(days_ahead=30):
     cursor = conn.cursor()
 
     # 抓所有未刪除事件
-    cursor.execute("SELECT id, date, repeat_type, repeat_value, expire FROM events WHERE stop = False")
+    cursor.execute("SELECT id, date, repeat_type, repeat_value, expire FROM work_events WHERE stop = False")
     events = cursor.fetchall()
 
     today = date.today()
@@ -21,7 +21,7 @@ def generate_main_from_events(days_ahead=30):
                 if start_date <= end_date:
                     cursor.execute(
                         """
-                        INSERT INTO main (event_id, occur_date)
+                        INSERT INTO work_main (event_id, occur_date)
                         VALUES (%s, %s)
                         ON CONFLICT (event_id, occur_date) DO NOTHING
                         """,
@@ -31,7 +31,7 @@ def generate_main_from_events(days_ahead=30):
                 if today <= start_date <= end_date:
                     cursor.execute(
                         """
-                        INSERT INTO main (event_id, occur_date)
+                        INSERT INTO work_main (event_id, occur_date)
                         VALUES (%s, %s)
                         ON CONFLICT (event_id, occur_date) DO NOTHING
                         """,
@@ -45,7 +45,7 @@ def generate_main_from_events(days_ahead=30):
                 if (current >= today) or expire:
                     cursor.execute(
                         """
-                        INSERT INTO main (event_id, occur_date)
+                        INSERT INTO work_main (event_id, occur_date)
                         VALUES (%s, %s)
                         ON CONFLICT (event_id, occur_date) DO NOTHING
                         """,
@@ -59,7 +59,7 @@ def generate_main_from_events(days_ahead=30):
                 if current >= today or expire:
                     cursor.execute(
                         """
-                        INSERT INTO main (event_id, occur_date)
+                        INSERT INTO work_main (event_id, occur_date)
                         VALUES (%s, %s)
                         ON CONFLICT (event_id, occur_date) DO NOTHING
                         """,
@@ -74,7 +74,7 @@ def generate_main_from_events(days_ahead=30):
                 if current >= today or expire:
                     cursor.execute(
                         """
-                        INSERT INTO main (event_id, occur_date)
+                        INSERT INTO work_main (event_id, occur_date)
                         VALUES (%s, %s)
                         ON CONFLICT (event_id, occur_date) DO NOTHING
                         """,

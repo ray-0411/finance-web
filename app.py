@@ -42,6 +42,10 @@ if st.session_state.sidebar_page == "main":
         st.session_state.sidebar_page = "work"
         st.session_state.page = "work_工作區塊"
         st.rerun()
+    if st.sidebar.button("🍔 吃飯評價"):
+        st.session_state.sidebar_page = "eat"
+        st.session_state.page = "eat_查看評價"
+        st.rerun()
 elif st.session_state.sidebar_page == "finance":
     if st.sidebar.button("➕ 新增交易"):
         st.session_state.page = "finance_新增交易"

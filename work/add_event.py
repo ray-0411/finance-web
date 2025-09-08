@@ -14,7 +14,7 @@ def add_event_page(event_id = 0):
     
     # 讀取分類資料
     conn = connect_sql_work()
-    df_cat = pd.read_sql("SELECT id, name FROM category WHERE is_deleted = FALSE ORDER BY id", conn)
+    df_cat = pd.read_sql("SELECT id, name FROM work_category WHERE is_deleted = FALSE ORDER BY id", conn)
     conn.close()
 
     if event_id != 0:
@@ -22,7 +22,7 @@ def add_event_page(event_id = 0):
         cursor = conn.cursor()
         cursor.execute("""
             SELECT id, title, description, date, time, category_id, repeat_type, repeat_value, priority, expire, score
-            FROM events WHERE id = %s
+            FROM work_events WHERE id = %s
         """, (event_id,))
         event = cursor.fetchone()
         conn.close()
@@ -81,7 +81,7 @@ def add_event_page(event_id = 0):
                 if eid == 0:
                     
                     cursor.execute("""
-                        INSERT INTO events (title, description, date, time, category_id, 
+                        INSERT INTO work_events (title, description, date, time, category_id, 
                             repeat_type, repeat_value, priority, expire, score)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """, (title, description, event_date, event_time, category_id, 
@@ -96,7 +96,7 @@ def add_event_page(event_id = 0):
 
                 else:
                     cursor.execute("""
-                        UPDATE events
+                        UPDATE work_events
                         SET title = %s, description = %s, date = %s, "time" = %s,
                             category_id = %s, repeat_type = %s, repeat_value = %s,
                             priority = %s, expire = %s, score = %s

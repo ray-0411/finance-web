@@ -9,7 +9,7 @@ from db import connect_sql_work
 
 def get_events():
     conn = connect_sql_work()
-    df = pd.read_sql("SELECT * FROM events ORDER BY date ASC", conn)
+    df = pd.read_sql("SELECT * FROM work_events ORDER BY date ASC", conn)
     conn.close()
     return df
 
@@ -44,7 +44,7 @@ def show_events_page():
     st.subheader("🗑️ 停用事件")
 
     conn = connect_sql_work()
-    df_events = pd.read_sql("SELECT id, title, date FROM events WHERE stop = FALSE ORDER BY date ASC", conn)
+    df_events = pd.read_sql("SELECT id, title, date FROM work_events WHERE stop = FALSE ORDER BY date ASC", conn)
     conn.close()
 
     if "delete_event_mode" not in st.session_state:
@@ -69,7 +69,7 @@ def show_events_page():
                         delete_id = int(st.session_state.delete_event_target.split("]")[0][1:])
                         conn = connect_sql_work()
                         cursor = conn.cursor()
-                        cursor.execute("UPDATE events SET stop = TRUE WHERE id = %s", (delete_id,))
+                        cursor.execute("UPDATE work_events SET stop = TRUE WHERE id = %s", (delete_id,))
                         conn.commit()
                         conn.close()
                         st.success(f"🗑️ 已停用事件 ID {delete_id}")
@@ -89,7 +89,7 @@ def show_events_page():
 
     conn = connect_sql_work()
     # 把所有事件都拿出來（包含停用的）
-    df_events = pd.read_sql("SELECT id, title, date, stop FROM events ORDER BY date ASC", conn)
+    df_events = pd.read_sql("SELECT id, title, date, stop FROM work_events ORDER BY date ASC", conn)
     conn.close()
 
     if "remove_event_target" not in st.session_state:
@@ -116,7 +116,7 @@ def show_events_page():
                     delete_id = int(st.session_state.remove_event_target.split("]")[0][1:])
                     conn = connect_sql_work()
                     cursor = conn.cursor()
-                    cursor.execute("DELETE FROM events WHERE id = %s", (delete_id,))
+                    cursor.execute("DELETE FROM work_events WHERE id = %s", (delete_id,))
                     conn.commit()
                     conn.close()
                     st.success(f"🗑️ 已刪除事件 ID {delete_id}")
