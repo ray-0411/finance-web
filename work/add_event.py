@@ -5,6 +5,8 @@ import time
 
 from db import connect_sql_work 
 
+from work.refresh_work import generate_main_from_events
+
 def add_event_page(event_id = 0):
     
     mode = "新增" if event_id == 0 else "編輯"
@@ -80,6 +82,13 @@ def add_event_page(event_id = 0):
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """, (title, description, event_date, event_time, category_id, repeat_type, repeat_value, priority, expire_val))
                     st.success(f"✅ 已新增事件：{title}")
+                    conn.commit()
+                    conn.close()
+                    time.sleep(0.5)
+                    generate_main_from_events()
+                    st.session_state.page = "工作區塊"
+                    st.rerun()    
+                    
                 else:
                     cursor.execute("""
                         UPDATE events
@@ -91,7 +100,7 @@ def add_event_page(event_id = 0):
                         category_id, repeat_type, repeat_value,
                         priority, expire_val, eid))
                     st.success(f"✅ 已更新事件：{title}")
-                conn.commit()
-                conn.close()
-                time.sleep(0.5)
-                st.rerun()
+                    conn.commit()
+                    conn.close()
+                    time.sleep(0.5)
+                    st.rerun()

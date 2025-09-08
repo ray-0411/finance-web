@@ -14,9 +14,10 @@ priority_colors = {
 def get_tasks():
     conn = connect_sql_work()
     df = pd.read_sql("""
-        SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, m.occur_date, m.is_completed
+        SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, m.occur_date, m.is_completed, c.name AS category_name
         FROM main m
         JOIN events e ON m.event_id = e.id
+        JOIN category c ON e.category_id = c.id
         WHERE m.is_stop = FALSE
             AND NOT (m.occur_date < CURRENT_DATE AND e.expire = TRUE AND m.is_completed = TRUE)
             AND NOT (m.occur_date < CURRENT_DATE AND e.expire = FALSE)
@@ -36,18 +37,27 @@ def work_page():
     st.markdown(
         """
         <style>
-        div[data-testid="stCheckbox"] > label {
+        /* 控制每一列 row 高度一致 */
+        div[data-testid="stHorizontalBlock"] {
+            align-items: center;   /* ⭐ 垂直置中 */
+        }
+        /* 控制 checkbox 放大 & 垂直對齊 */
+        div[data-testid="stCheckbox"] label {
             display: flex;
-            align-items: center;   /* 垂直置中 */
+            align-items: center;
         }
         div[data-testid="stCheckbox"] input[type="checkbox"] {
-            transform: scale(1.5);   /* 放大 1.5 倍 */
-            margin-right: 10px;      /* 和文字的距離 */
-            vertical-align: middle;  /* 和文字置中對齊 */
+            transform: scale(1.5);
+            margin-right: 6px;
         }
-        /* 把 checkbox 文字字體放大 */
-        div[data-testid="stCheckbox"] label p {
-            font-size: 24px !important;
+        /* 控制按鈕大小和垂直對齊 */
+        div[data-testid="stButton"] button {
+            height: 40px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateY(8px);
         }
         </style>
         """,
@@ -89,15 +99,31 @@ def work_page():
             else:
                 text_html = f"<span style='color:{color}; font-size:24px'>{text}</span>"
 
-            col1, col2, col3 = st.columns([0.1, 0.75, 0.15])
+            col1, col2, col3, col4 = st.columns([0.05, 0.65, 0.2, 0.1])
+
             with col1:
                 checked = st.checkbox("", value=bool(row['is_completed']), key=f"task_{row['id']}")
+
             with col2:
-                st.markdown(text_html, unsafe_allow_html=True)
+                st.markdown(
+                    f"""
+                    <div style="display:flex; align-items:center; height:100%; font-size:24px; color:{color};">
+                        {'<s>' + text + '</s>' if row['is_completed'] else text}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
             with col3:
-                if st.button("✏️ 編輯", key=f"edit_{row['id']}"):
+                st.markdown(
+                    f"<div style='font-size:18px; font-weight:bold; text-align:center;'>📂 {row['category_name']}</div>",
+                    unsafe_allow_html=True
+                )
+            
+            with col4:
+                if st.button("✏️", key=f"edit_{row['id']}"):
                     st.session_state["page"] = "編輯事件"
-                    st.session_state["edit_event_id"] = row["event_id"]   # ⭐ 傳 event_id
+                    st.session_state["edit_event_id"] = row["event_id"]
                     st.rerun()
 
             if checked != bool(row['is_completed']):
