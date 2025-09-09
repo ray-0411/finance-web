@@ -24,7 +24,7 @@ from drink.drink_category import drink_category_page
 st.sidebar.title("📌 選單")
 
 # 👉 在這裡設定初始分頁（方便開發）
-DEFAULT_PAGE = "other_喝水統計"
+DEFAULT_PAGE = "other_分類管理"
 DEFAULT_SIDEBAR = "other"
 
 # 全域變數
