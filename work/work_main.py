@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from db import connect_sql_work 
+from db import connect_sql
 
 priority_colors = {
     5: "red",
@@ -12,7 +12,7 @@ priority_colors = {
 }
 
 def get_tasks():
-    conn = connect_sql_work()
+    conn = connect_sql()
     df = pd.read_sql("""
         SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, 
             m.occur_date, m.is_completed, c.name AS category_name, e.score
@@ -28,7 +28,7 @@ def get_tasks():
     return df
 
 def update_task_status(task_id, status):
-    conn = connect_sql_work()
+    conn = connect_sql()
     cursor = conn.cursor()
     
     if status:  # ✅ 勾選完成

@@ -4,11 +4,11 @@ import pandas as pd
 from datetime import date
 import time
 
-from db import connect_sql_work
+from db import connect_sql
 
 
 def get_events():
-    conn = connect_sql_work()
+    conn = connect_sql()
     df = pd.read_sql("SELECT * FROM work_events ORDER BY date ASC", conn)
     conn.close()
     return df
@@ -43,7 +43,7 @@ def show_events_page():
 
     st.subheader("🗑️ 停用事件")
 
-    conn = connect_sql_work()
+    conn = connect_sql()
     df_events = pd.read_sql("SELECT id, title, date FROM work_events WHERE stop = FALSE ORDER BY date ASC", conn)
     conn.close()
 
@@ -67,7 +67,7 @@ def show_events_page():
                 with col1:
                     if st.button("✅ 確定停用"):
                         delete_id = int(st.session_state.delete_event_target.split("]")[0][1:])
-                        conn = connect_sql_work()
+                        conn = connect_sql()
                         cursor = conn.cursor()
                         cursor.execute("UPDATE work_events SET stop = TRUE WHERE id = %s", (delete_id,))
                         conn.commit()
@@ -87,7 +87,7 @@ def show_events_page():
 
     st.subheader("🗑️ 刪除事件")
 
-    conn = connect_sql_work()
+    conn = connect_sql()
     # 把所有事件都拿出來（包含停用的）
     df_events = pd.read_sql("SELECT id, title, date, stop FROM work_events ORDER BY date ASC", conn)
     conn.close()
@@ -114,7 +114,7 @@ def show_events_page():
             with col1:
                 if st.button("✅ 確定刪除"):
                     delete_id = int(st.session_state.remove_event_target.split("]")[0][1:])
-                    conn = connect_sql_work()
+                    conn = connect_sql()
                     cursor = conn.cursor()
                     cursor.execute("DELETE FROM work_events WHERE id = %s", (delete_id,))
                     conn.commit()

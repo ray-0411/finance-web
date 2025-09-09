@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
-from db import connect_sql_work
+from db import connect_sql
 
 def work_categories_page():
     st.title("📂 分類管理")
 
     # 1️⃣ 總表 (只顯示未刪除)
-    conn = connect_sql_work()
+    conn = connect_sql()
     df = pd.read_sql("""
         SELECT c.id, c.name, p.name AS parent_name
         FROM work_category c
@@ -36,7 +36,7 @@ def work_categories_page():
             if new_name.strip() == "":
                 st.error("❌ 名稱不能為空")
             else:
-                conn = connect_sql_work()
+                conn = connect_sql()
                 cursor = conn.cursor()
                 cursor.execute("INSERT INTO work_category (name, parent_id) VALUES (%s, %s)", (new_name, parent_id))
                 conn.commit()
@@ -53,7 +53,7 @@ def work_categories_page():
         delete_id = int(df.loc[df["name"] == delete_name, "id"].iloc[0])
 
         if st.button("刪除", type="primary"):
-            conn = connect_sql_work()
+            conn = connect_sql()
             cursor = conn.cursor()
             # 軟刪除
             cursor.execute("UPDATE work_category SET is_deleted = TRUE WHERE id = %s", (delete_id,))

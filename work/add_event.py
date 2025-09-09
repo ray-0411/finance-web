@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import date
 import time
 
-from db import connect_sql_work 
+from db import connect_sql 
 
 from work.refresh_work import generate_main_from_events
 
@@ -13,12 +13,12 @@ def add_event_page(event_id = 0):
     st.title(f"✏️ {mode}事件")
     
     # 讀取分類資料
-    conn = connect_sql_work()
+    conn = connect_sql()
     df_cat = pd.read_sql("SELECT id, name FROM work_category WHERE is_deleted = FALSE ORDER BY id", conn)
     conn.close()
 
     if event_id != 0:
-        conn = connect_sql_work()
+        conn = connect_sql()
         cursor = conn.cursor()
         cursor.execute("""
             SELECT id, title, description, date, time, category_id, repeat_type, repeat_value, priority, expire, score
@@ -75,7 +75,7 @@ def add_event_page(event_id = 0):
             if title.strip() == "":
                 st.error("❌ 標題不能為空")
             else:
-                conn = connect_sql_work()
+                conn = connect_sql()
                 cursor = conn.cursor()
                 
                 if eid == 0:

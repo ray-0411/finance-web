@@ -46,6 +46,10 @@ if st.session_state.sidebar_page == "main":
         st.session_state.sidebar_page = "eat"
         st.session_state.page = "eat_查看評價"
         st.rerun()
+    if st.sidebar.button("🧩 其他區塊"):
+        st.session_state.sidebar_page = "other"
+        st.session_state.page = "喝水統計"
+        st.rerun()
 elif st.session_state.sidebar_page == "finance":
     if st.sidebar.button("➕ 新增交易"):
         st.session_state.page = "finance_新增交易"
@@ -92,6 +96,14 @@ elif st.session_state.sidebar_page == "eat":
     if st.sidebar.button("🔙 回主選單"):
         st.session_state.sidebar_page = "main"
         st.rerun()
+elif st.session_state.sidebar_page == "other":
+    if st.sidebar.button("💧 喝水統計"):
+        st.session_state.page = "other_喝水統計"
+        st.rerun()
+    if st.sidebar.button("🔙 回主選單"):
+        st.session_state.sidebar_page = "main"
+        st.rerun()
+
 
 # --- 頁面切換 ---
 if st.session_state.sidebar_page == "main":
@@ -124,4 +136,7 @@ elif st.session_state.sidebar_page == "eat":
     elif st.session_state.page == "eat_分類管理":
         pass
     elif st.session_state.page == "eat_編輯評價":
+        pass
+elif st.session_state.sidebar_page == "other":
+    if st.session_state.page == "other_喝水統計":
         pass

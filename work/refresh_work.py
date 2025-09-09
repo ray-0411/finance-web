@@ -1,9 +1,9 @@
 from datetime import date, timedelta
 
-from db import connect_sql_work 
+from db import connect_sql
 
 def generate_main_from_events(days_ahead=30):
-    conn = connect_sql_work()
+    conn = connect_sql()
     cursor = conn.cursor()
 
     # 抓所有未刪除事件
