@@ -146,7 +146,7 @@ def work_page():
             
             with col4:
                 if st.button("✏️", key=f"edit_{row['id']}"):
-                    st.session_state["page"] = "編輯事件"
+                    st.session_state["page"] = "work_編輯事件"
                     st.session_state["edit_event_id"] = row["event_id"]
                     st.rerun()
 
