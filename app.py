@@ -14,7 +14,7 @@ from work.refresh_work import generate_main_from_events
 from work.event_list import show_events_page
 from work.work_category import work_categories_page
 
-from drink.drink_main import drink_insert_page
+from drink.drink_add import drink_add_page
 from drink.drink_category import drink_category_page
 
 
@@ -152,6 +152,6 @@ elif st.session_state.sidebar_page == "eat":
 
 elif st.session_state.sidebar_page == "drink":
     if st.session_state.page == "drink_喝水統計":
-        drink_insert_page()
+        drink_add_page()
     elif st.session_state.page == "drink_分類管理":
         drink_category_page()
