@@ -24,8 +24,8 @@ from drink.drink_category import drink_category_page
 st.sidebar.title("📌 選單")
 
 # 👉 在這裡設定初始分頁（方便開發）
-DEFAULT_PAGE = "drink_喝水統計"
-DEFAULT_SIDEBAR = "drink"
+DEFAULT_PAGE = "work_工作區塊"
+DEFAULT_SIDEBAR = "work"
 
 # 全域變數
 if "page" not in st.session_state:

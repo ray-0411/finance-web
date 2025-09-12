@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime, timedelta
 
 from db import connect_sql
 
@@ -22,7 +23,7 @@ def get_tasks():
         WHERE m.is_stop = FALSE
             AND NOT (m.occur_date < CURRENT_DATE AND e.expire = TRUE AND m.is_completed = TRUE)
             AND NOT (m.occur_date < CURRENT_DATE AND e.expire = FALSE)
-        ORDER BY m.occur_date ASC, e.priority DESC
+        ORDER BY m.occur_date ASC, m.is_completed ASC, e.priority DESC
     """, conn)
     conn.close()
     return df
@@ -104,8 +105,17 @@ def work_page():
         date_str = dt.strftime("%Y/%m/%d")
         weekday_str = weekday_map[dt.weekday()]  # weekday(): 0=星期一, 6=星期日
 
+        today = datetime.today()
+
+        # 找到今天和目標日期所屬周的「週一」
+        today_monday = today - timedelta(days=today.weekday())   # 本周一
+        target_monday = dt - timedelta(days=dt.weekday())        # 目標日期的周一
+
+        # 相差幾周
+        week_diff = (target_monday - today_monday).days // 7 + 1
+
         # 顯示
-        st.markdown(f"### {date_str} {weekday_str}")
+        st.markdown(f"### {date_str} {weekday_str} (W{week_diff})")
 
         for _, row in group.iterrows():
             # 顯示文字
@@ -119,8 +129,10 @@ def work_page():
             if row['score'] and row['score'] > 0:
                 text = text + "&nbsp;&nbsp;" +f"({row['score']})"
 
-            color = priority_colors.get(row['priority'], "black")
-            
+            if row['expire'] and pd.to_datetime(row['occur_date']) < pd.to_datetime(datetime.today().date()) and not row['is_completed']:
+                color = "violet"  
+            else:
+                color = priority_colors.get(row['priority'], "black")
 
             col1, col2, col3, col4 = st.columns([0.05, 0.65, 0.2, 0.1])
             
