@@ -21,7 +21,17 @@ def drink_add_page():
     with col1:
         drink_date = st.date_input("日期", value=date.today())
     with col2:
-        drink_time = st.time_input("時間", value=datetime.now().time().replace(microsecond=0))
+        default_time = datetime.now().strftime("%H:%M")
+
+        time_str = st.text_input("時間 (HH:MM)", value=default_time)
+        if time_str:
+            try:
+                drink_time = datetime.strptime(time_str, "%H:%M").time()
+            except ValueError:
+                st.error("❌ 時間格式錯誤，請輸入 HH:MM")
+                drink_time = None
+        else:
+            drink_time = None
 
     parent_options = df_cat[df_cat["parent_id"].isna()]
     parent_name = st.selectbox("type", parent_options["name"].tolist())
