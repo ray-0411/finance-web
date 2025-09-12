@@ -108,8 +108,8 @@ elif st.session_state.sidebar_page == "drink":
     if st.sidebar.button("📋 飲用紀錄"):
         st.session_state.page = "drink_喝水紀錄"
         st.rerun()
-    if st.sidebar.button("💧 喝水統計"):
-        st.session_state.page = "drink_喝水統計"
+    if st.sidebar.button("💧 新增紀錄"):
+        st.session_state.page = "drink_新增紀錄"
         st.rerun()
     if st.sidebar.button("📂 分類管理"):
         st.session_state.page = "drink_分類管理"
@@ -155,7 +155,7 @@ elif st.session_state.sidebar_page == "eat":
         pass
 
 elif st.session_state.sidebar_page == "drink":
-    if st.session_state.page == "drink_喝水統計":
+    if st.session_state.page == "drink_新增紀錄":
         drink_add_page()
     elif st.session_state.page == "drink_分類管理":
         drink_category_page()
