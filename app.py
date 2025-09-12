@@ -16,6 +16,7 @@ from work.work_category import work_categories_page
 
 from drink.drink_add import drink_add_page
 from drink.drink_category import drink_category_page
+from drink.drink_main import drink_main_page
 
 
 
@@ -24,8 +25,8 @@ from drink.drink_category import drink_category_page
 st.sidebar.title("📌 選單")
 
 # 👉 在這裡設定初始分頁（方便開發）
-DEFAULT_PAGE = "work_工作區塊"
-DEFAULT_SIDEBAR = "work"
+DEFAULT_PAGE = "drink_喝水紀錄"
+DEFAULT_SIDEBAR = "drink"
 
 # 全域變數
 if "page" not in st.session_state:
@@ -51,7 +52,7 @@ if st.session_state.sidebar_page == "main":
         st.rerun()
     if st.sidebar.button("💧 喝水紀錄"):
         st.session_state.sidebar_page = "drink"
-        st.session_state.page = "drink_喝水統計"
+        st.session_state.page = "drink_喝水紀錄"
         st.rerun()
 
 elif st.session_state.sidebar_page == "finance":
@@ -104,6 +105,9 @@ elif st.session_state.sidebar_page == "eat":
         st.rerun()
 
 elif st.session_state.sidebar_page == "drink":
+    if st.sidebar.button("📋 飲用紀錄"):
+        st.session_state.page = "drink_喝水紀錄"
+        st.rerun()
     if st.sidebar.button("💧 喝水統計"):
         st.session_state.page = "drink_喝水統計"
         st.rerun()
@@ -155,3 +159,5 @@ elif st.session_state.sidebar_page == "drink":
         drink_add_page()
     elif st.session_state.page == "drink_分類管理":
         drink_category_page()
+    elif st.session_state.page == "drink_喝水紀錄":
+        drink_main_page()
