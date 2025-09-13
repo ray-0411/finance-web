@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import date, datetime
+from zoneinfo import ZoneInfo
 import time
 from db import connect_sql
 
@@ -21,7 +22,7 @@ def drink_add_page():
     with col1:
         drink_date = st.date_input("日期", value=date.today())
     with col2:
-        default_time = datetime.now().strftime("%H:%M")
+        default_time = datetime.now(ZoneInfo("Asia/Taipei")).strftime("%H:%M")
 
         time_str = st.text_input("時間 (HH:MM)", value=default_time)
         if time_str:
