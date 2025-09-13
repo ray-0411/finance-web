@@ -26,8 +26,9 @@ from drink.drink_main import drink_main_page
 st.sidebar.title("📌 選單")
 
 # 👉 在這裡設定初始分頁（方便開發）
-DEFAULT_PAGE = "finance_新增分類"
-DEFAULT_SIDEBAR = "finance"
+DEFAULT_PAGE = "main"
+DEFAULT_SIDEBAR = "main"
+
 
 # 全域變數
 if "page" not in st.session_state:
