@@ -4,9 +4,10 @@ import streamlit as st
 
 from main.main_page import main_page
 
-from finance.add_transaction import add_transaction_page
-from finance.manage_categories import manage_categories_page
+from finance.add_transaction import finance_add_transaction_page
+from finance.add_category import finance_add_category_page
 from finance.get_transaction import get_transaction_page
+from finance.show_category import show_category_page
 
 from work.work_main import work_page
 from work.add_event import add_event_page
@@ -25,8 +26,8 @@ from drink.drink_main import drink_main_page
 st.sidebar.title("📌 選單")
 
 # 👉 在這裡設定初始分頁（方便開發）
-DEFAULT_PAGE = "work_新增事件"
-DEFAULT_SIDEBAR = "work"
+DEFAULT_PAGE = "finance_新增分類"
+DEFAULT_SIDEBAR = "finance"
 
 # 全域變數
 if "page" not in st.session_state:
@@ -62,8 +63,11 @@ elif st.session_state.sidebar_page == "finance":
     if st.sidebar.button("📊 檢視交易"):
         st.session_state.page = "finance_檢視交易"
         st.rerun()
-    if st.sidebar.button("📂 分類管理"):
-        st.session_state.page = "finance_分類管理"
+    if st.sidebar.button("📂 分類總表"):
+        st.session_state.page = "finance_分類總表"
+        st.rerun()
+    if st.sidebar.button("📂 新增分類"):
+        st.session_state.page = "finance_新增分類"
         st.rerun()
     if st.sidebar.button("🔙 回主選單"):
         st.session_state.sidebar_page = "main"
@@ -124,11 +128,13 @@ if st.session_state.sidebar_page == "main":
     main_page()
 elif st.session_state.sidebar_page == "finance":
     if st.session_state.page == "finance_新增交易":
-        add_transaction_page()
+        finance_add_transaction_page()
     elif st.session_state.page == "finance_檢視交易":
         get_transaction_page()
-    elif st.session_state.page == "finance_分類管理":
-        manage_categories_page()
+    elif st.session_state.page == "finance_新增分類":
+        finance_add_category_page()
+    elif st.session_state.page == "finance_分類總表":
+        show_category_page()
 
 elif st.session_state.sidebar_page == "work":
     if st.session_state.page == "work_工作區塊":
