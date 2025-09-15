@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import time
+from st_aggrid import AgGrid, GridOptionsBuilder
 from db import connect_sql   # ✅ 用你專案的共用連線 function
 
 
@@ -18,8 +19,34 @@ def drink_category_page():
     """, conn)
     conn.close()
 
-    st.subheader("分類總表")
-    st.dataframe(all_df[["id", "name", "parent_name", "weight"]], use_container_width=True)
+    # st.subheader("分類總表")
+    # st.dataframe(all_df[["id", "name", "parent_name", "weight"]], use_container_width=True)
+
+
+    def show_category_tree(df, parent_id=None, level=0, parent_weight=1):
+        if parent_id is None:
+            children = df[df["parent_id"].isnull() | (df["parent_id"] == 0)]
+        else:
+            children = df[df["parent_id"] == parent_id]
+
+        for _, row in children.iterrows():
+            # 計算「當前累積權重」
+            total_weight = parent_weight * row["weight"]
+
+            sub_children = df[df["parent_id"] == row["id"]]
+
+            if not sub_children.empty:
+                with st.expander("　" * level + f"{row['name']} 分數 : {total_weight} ", expanded=False):
+                    show_category_tree(df, parent_id=row["id"], level=level+1, parent_weight=total_weight)
+            else:
+                st.write("　" * level + f"- {row['name']} 分數 : {total_weight} ")
+
+
+    # 使用方式
+    st.subheader("📂 分類樹狀顯示")
+    show_category_tree(all_df)
+
+
 
     st.divider()
 
