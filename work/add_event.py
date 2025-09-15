@@ -56,7 +56,8 @@ def add_event_page(event_id = 0):
 
 
     # 先找父分類（parent_id 為 NULL 的）
-    parent_options = df_cat[df_cat["parent_id"].isna()]
+    parent_options = df_cat[df_cat["parent_id"].isna()].reset_index(drop=True)
+    
 
     # 預設父分類
     if category_id in parent_options["id"].values:
@@ -68,12 +69,14 @@ def add_event_page(event_id = 0):
             parent_index = int(parent_options.index[parent_options["id"] == parent_id].tolist()[0])
         else:
             parent_index = 0
+    
 
     parent_name = st.selectbox("父分類", parent_options["name"].tolist(), index=parent_index)
     parent_id = int(parent_options.loc[parent_options["name"] == parent_name, "id"].iloc[0])
 
     # 再選子分類（parent_id = 父分類 id）
-    child_options = df_cat[df_cat["parent_id"] == parent_id].copy()
+    child_options = df_cat[df_cat["parent_id"] == parent_id].copy().reset_index(drop=True)
+    
 
     # ➕ 在最前面加上一個「(無)」選項
     child_options = pd.concat([
@@ -86,6 +89,7 @@ def add_event_page(event_id = 0):
         child_index = int(child_options.index[child_options["id"] == category_id].tolist()[0])
     else:
         child_index = 0
+        
 
     child_name = st.selectbox("子分類", child_options["name"].tolist(), index=child_index)
 
