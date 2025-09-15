@@ -121,7 +121,6 @@ def add_event_page(event_id = 0):
                 st.success(f"✅ 已新增事件：{title}")
                 conn.commit()
                 conn.close()
-                time.sleep(0.5)
                 generate_main_from_events()
                 st.session_state.page = "work_工作區塊"
                 st.rerun()
@@ -139,5 +138,6 @@ def add_event_page(event_id = 0):
                 st.success(f"✅ 已更新事件：{title}")
                 conn.commit()
                 conn.close()
-                time.sleep(0.5)
+                generate_main_from_events()
+                st.session_state.page = "work_工作區塊"
                 st.rerun()

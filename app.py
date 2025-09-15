@@ -14,6 +14,7 @@ from work.add_event import add_event_page
 from work.refresh_work import generate_main_from_events
 from work.event_list import show_events_page
 from work.work_category import work_categories_page
+from work.main_setting import work_main_setting_page
 
 from drink.drink_add import drink_add_page
 from drink.drink_category import drink_category_page
@@ -148,6 +149,8 @@ elif st.session_state.sidebar_page == "work":
         work_categories_page()
     elif st.session_state.page == "work_編輯事件":
         add_event_page(st.session_state.edit_event_id)
+    elif st.session_state.page == "work_設定":
+        work_main_setting_page()
 
 elif st.session_state.sidebar_page == "eat":
     if st.session_state.page == "eat_查看評價":

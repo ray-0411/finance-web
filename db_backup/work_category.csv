@@ -1,0 +1,11 @@
+﻿id,name,parent_id,is_deleted
+2,學校,,False
+3,社團,,False
+1,家庭,,True
+4,家庭,,False
+5,日文(四),2.0,False
+6,圖形理論,2.0,False
+7,民主課,2.0,False
+8,多媒體,2.0,False
+9,國防,2.0,False
+10,生活,,False

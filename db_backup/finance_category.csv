@@ -1,0 +1,4 @@
+﻿id,name,parent_id,default_account_id,sort_order,is_deleted,created_at,type
+1,testl1,,,0,False,2025-09-13 17:18:35.965798,expense
+2,testl2,1.0,,0,False,2025-09-13 17:18:47.928866,expense
+3,testl3,2.0,,0,False,2025-09-13 17:19:06.726547,expense

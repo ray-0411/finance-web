@@ -87,8 +87,19 @@ def work_page():
         unsafe_allow_html=True
     )
     
-    
-    st.title("📋 待辦事項")
+    col1, col2, col3= st.columns([0.8, 0.3, 0.2])
+    with col1:
+        st.title("📋 待辦事項")
+    with col2:
+        if st.button("➕ 新增事件"):
+            st.session_state["page"] = "work_新增事件"
+            st.rerun()
+    with col3:
+        #設定區塊
+        if st.button("⚙️ 設定"):
+            st.session_state["page"] = "work_設定"
+            st.rerun()
+
 
     tasks = get_tasks()
     if tasks.empty:
