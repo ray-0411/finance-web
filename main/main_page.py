@@ -1,12 +1,13 @@
 import streamlit as st
 import pandas as pd
 from datetime import date, timedelta
+from help_fun.time_taipei import t_today, t_now
 
 from db import connect_sql
 
 def main_page():
-    start_date = date.today() - timedelta(days=7)
-    end_date = date.today()
+    start_date = t_today() - timedelta(days=7)
+    end_date = t_today()
 
     conn = connect_sql()
     df = pd.read_sql("""

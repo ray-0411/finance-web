@@ -19,6 +19,7 @@ from work.main_setting import work_main_setting_page
 from drink.drink_add import drink_add_page
 from drink.drink_category import drink_category_page
 from drink.drink_main import drink_main_page
+from drink.drink_calendar import drink_calendar_page
 
 
 
@@ -120,6 +121,9 @@ elif st.session_state.sidebar_page == "drink":
     if st.sidebar.button("📂 分類管理"):
         st.session_state.page = "drink_分類管理"
         st.rerun()
+    if st.sidebar.button("📅 月曆檢視"):
+        st.session_state.page = "drink_月曆檢視"
+        st.rerun()
     if st.sidebar.button("🔙 回主選單"):
         st.session_state.sidebar_page = "main"
         st.rerun()
@@ -171,3 +175,5 @@ elif st.session_state.sidebar_page == "drink":
         drink_category_page()
     elif st.session_state.page == "drink_喝水紀錄":
         drink_main_page()
+    elif st.session_state.page == "drink_月曆檢視":
+        drink_calendar_page()

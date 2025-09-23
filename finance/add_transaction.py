@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import date
 from db import connect_sql
+from help_fun.time_taipei import t_today, t_now
 
 def finance_add_transaction_page():
     st.title("➕ 新增交易紀錄")
@@ -64,7 +65,7 @@ def finance_add_transaction_page():
         category_id = grandchild_id or child_id or parent_id
 
     # --- 輸入其他欄位 ---
-    t_date = st.date_input("日期", value=date.today())
+    t_date = st.date_input("日期", value=t_today())
     note = st.text_input("備註")
 
     # --- 提交 ---
