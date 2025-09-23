@@ -2,10 +2,12 @@ import streamlit as st
 import pandas as pd
 from datetime import date
 import time
+from zoneinfo import ZoneInfo
 
 from db import connect_sql 
 
 from work.refresh_work import generate_main_from_events
+from help_fun.time_taipei import t_today, t_now
 
 def add_event_page(event_id = 0):
     
@@ -39,7 +41,7 @@ def add_event_page(event_id = 0):
         eid = 0
         title = ""
         description = ""
-        event_date = date.today()
+        event_date = t_today()
         event_time = ""
         category_id = int(df_cat["id"].iloc[0])
         repeat_type = "none"

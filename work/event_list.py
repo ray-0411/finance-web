@@ -5,6 +5,7 @@ from datetime import date
 import time
 
 from db import connect_sql
+from help_fun.time_taipei import t_today, t_now
 
 
 def get_events():
@@ -16,8 +17,9 @@ def get_events():
 def show_events_page():
     st.title("📅 事件列表")
 
-    today = date.today()
     df = get_events()
+    
+    today=t_today()
 
     if df.empty:
         st.info("目前沒有任何事件")

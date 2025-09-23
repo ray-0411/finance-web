@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from help_fun.time_taipei import t_today, t_now
 
 from db import connect_sql
 
@@ -14,8 +15,8 @@ def generate_main_from_events(days_ahead=30):
                 """)
     events = cursor.fetchall()
 
-    today = date.today()
-    end_date = today + timedelta(days=days_ahead)
+    today = t_today()
+    end_date = t_today() + timedelta(days=days_ahead)
     
     # 1️⃣ 先抓已有的 main (event_id, occur_date)
     cursor.execute("SELECT event_id, occur_date FROM work_main")

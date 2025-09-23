@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 from db import connect_sql
+from help_fun.time_taipei import t_today, t_now
 
 priority_colors = {
     5: "red",
@@ -116,11 +117,12 @@ def work_page():
         date_str = dt.strftime("%Y/%m/%d")
         weekday_str = weekday_map[dt.weekday()]  # weekday(): 0=星期一, 6=星期日
 
-        today = datetime.today()
+        today = pd.to_datetime(t_today())
 
         # 找到今天和目標日期所屬周的「週一」
         today_monday = today - timedelta(days=today.weekday())   # 本周一
         target_monday = dt - timedelta(days=dt.weekday())        # 目標日期的周一
+        
 
         # 相差幾周
         week_diff = (target_monday - today_monday).days // 7 + 1
@@ -140,7 +142,7 @@ def work_page():
             if row['score'] and row['score'] > 0:
                 text = text + "&nbsp;&nbsp;" +f"({row['score']})"
 
-            if row['expire'] and pd.to_datetime(row['occur_date']) < pd.to_datetime(datetime.today().date()) and not row['is_completed']:
+            if row['expire'] and pd.to_datetime(row['occur_date']) < pd.to_datetime(today.date()) and not row['is_completed']:
                 color = "violet"  
             else:
                 color = priority_colors.get(row['priority'], "black")

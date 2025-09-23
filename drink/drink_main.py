@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import date, timedelta
+from help_fun.time_taipei import t_today, t_now
 
 
 from db import connect_sql
@@ -11,9 +12,9 @@ def drink_main_page():
     # --- 🔹 日期區間選擇器 ---
     col1, col2 = st.columns(2)
     with col1:
-        start_date = st.date_input("開始日期", value=date.today()-timedelta(days=7))
+        start_date = st.date_input("開始日期", value=t_today()-timedelta(days=7))
     with col2:
-        end_date = st.date_input("結束日期", value=date.today())
+        end_date = st.date_input("結束日期", value=t_today())
 
     if start_date > end_date:
         st.error("❌ 開始日期不能晚於結束日期")

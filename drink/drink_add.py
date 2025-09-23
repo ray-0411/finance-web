@@ -4,6 +4,7 @@ from datetime import date, datetime
 from zoneinfo import ZoneInfo
 import time
 from db import connect_sql
+from help_fun.time_taipei import t_today, t_now
 
 def drink_add_page():
     st.title("🥤 新增飲用紀錄")
@@ -20,9 +21,11 @@ def drink_add_page():
 
     col1, col2 = st.columns(2)
     with col1:
-        drink_date = st.date_input("日期", value=date.today())
+        default_date = t_now().date()
+        
+        drink_date = st.date_input("日期", value=default_date)
     with col2:
-        default_time = datetime.now(ZoneInfo("Asia/Taipei")).strftime("%H:%M")
+        default_time = t_now().strftime("%H:%M")
 
         time_str = st.text_input("時間 (HH:MM)", value=default_time)
         if time_str:
