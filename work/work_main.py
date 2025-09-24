@@ -17,7 +17,7 @@ def get_tasks():
     conn = connect_sql()
     df = pd.read_sql("""
         SELECT m.id, m.event_id, e.title, e.time, e.expire, e.priority, 
-            m.occur_date, m.is_completed, c.name AS category_name, e.score
+            m.occur_date, m.is_completed, c.name AS category_name, e.score,e.description
         FROM work_main m
         JOIN work_events e ON m.event_id = e.id
         JOIN work_category c ON e.category_id = c.id
@@ -170,7 +170,12 @@ def work_page():
                 )
             
             with col4:
-                if st.button("✏️", key=f"edit_{row['id']}"):
+                icon = "✏️"
+                
+                if row['description'] and row['description'].strip() != "":
+                    icon = "📝"
+                
+                if st.button(icon, key=f"edit_{row['id']}"):
                     st.session_state["page"] = "work_編輯事件"
                     st.session_state["edit_event_id"] = row["event_id"]
                     st.rerun()
