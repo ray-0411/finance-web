@@ -84,33 +84,26 @@ def drink_calendar_page():
         options={
             "initialView": "dayGridMonth",
             "locale": "zh-tw",
-            "eventClick": True
+            "height": "auto",
+            "firstDay": 1,
         },
         key="drink_calendar"
     )
     
-    if calendar_value and calendar_value.get("callback") == "eventsSet":
-        events_list = calendar_value["eventsSet"]["events"]
+    if calendar_value and calendar_value.get("callback") == "eventClick":
+        e = calendar_value["eventClick"]["event"]
+        props = e.get("extendedProps", {})
 
-        # 用一個 date_input 讓使用者選日期
-        selected_date = st.date_input("選擇日期查看詳細", value=pd.to_datetime("today"))
+        water = props.get("water", "—")
+        drink = props.get("drink", "—")
+        ratio = e["title"].replace("📊", "")
 
-        # 找到該日期的事件
-        selected = next((e for e in events_list if e["start"] == str(selected_date)), None)
-
-        if selected:
-            water = selected["extendedProps"]["water"]
-            drink = selected["extendedProps"]["drink"]
-            ratio = selected["title"].replace("📊","")
-
-            st.subheader(f"📅 {selected_date} 的紀錄")
-            st.markdown(f"""
-            - 💧 Water 分數：**{water}**
-            - 🥤 Drink 分數：**{drink}**
-            - 📊 比例：**{ratio}**
-            """)
-        else:
-            st.info(f"{selected_date} 沒有紀錄")
+        st.subheader(f"📅 {e['start']} 的紀錄")
+        st.markdown(f"""
+        - 💧 Water 分數：**{water}**
+        - 🥤 Drink 分數：**{drink}**
+        - 📊 比例：**{ratio}**
+        """)
 
     st.markdown("---")
 
