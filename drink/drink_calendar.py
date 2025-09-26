@@ -12,9 +12,9 @@ def drink_calendar_page():
     conn = connect_sql()
     df = pd.read_sql("""
         SELECT m.id, m.drink_date, m.drink_time, m.amount, m.note,
-               c.name AS category_name, p.name AS parent_name, gp.name AS grand_name,
-               COALESCE(gp.name, p.name, c.name) AS root_name,
-               COALESCE(gp.weight,1) * COALESCE(p.weight,1) * COALESCE(c.weight,1) AS score
+                c.name AS category_name, p.name AS parent_name, gp.name AS grand_name,
+                COALESCE(gp.name, p.name, c.name) AS root_name,
+                COALESCE(gp.weight,1) * COALESCE(p.weight,1) * COALESCE(c.weight,1) AS score
         FROM drink_main m
         LEFT JOIN drink_category c ON m.category_id = c.id
         LEFT JOIN drink_category p ON c.parent_id = p.id
@@ -37,6 +37,15 @@ def drink_calendar_page():
 
     # 依日期排序
     df_pivot = df_pivot.sort_values("drink_date")
+    
+    # ⭐ 先補齊日期（包含沒有紀錄的日子）
+    full_dates = pd.date_range(df_pivot["drink_date"].min(), df_pivot["drink_date"].max())
+    df_pivot = df_pivot.set_index("drink_date").reindex(full_dates).reset_index()
+    df_pivot = df_pivot.rename(columns={"index": "drink_date"})
+
+    # ⭐ 沒紀錄的日子補 0（ratio 先不算）
+    df_pivot[["water_score", "drink_score"]] = \
+        df_pivot[["water_score", "drink_score"]].fillna(0)
 
     # rolling 計算「往前 N 天（包含當天）」的總和
     df_pivot["water_sum"] = df_pivot["water_score"].rolling(window=days, min_periods=1).sum()
@@ -45,6 +54,8 @@ def drink_calendar_page():
         lambda r: r["drink_sum"] / r["water_sum"] if r["water_sum"] > 0 else None,
         axis=1
     )
+    
+    
 
 
 

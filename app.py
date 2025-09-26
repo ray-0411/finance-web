@@ -22,6 +22,9 @@ from drink.drink_category import drink_category_page
 from drink.drink_main import drink_main_page
 from drink.drink_calendar import drink_calendar_page
 
+from tools.tools_day_counter_main import day_counter_main_page
+from tools.tools_day_counter_add import add_day_counter
+
 
 
 
@@ -58,6 +61,10 @@ if st.session_state.sidebar_page == "main":
     if st.sidebar.button("💧 喝水紀錄"):
         st.session_state.sidebar_page = "drink"
         st.session_state.page = "drink_喝水紀錄"
+        st.rerun()
+    if st.sidebar.button("🛠️ 小工具"):
+        st.session_state.sidebar_page = "tools"
+        st.session_state.page = "tools_計日器"
         st.rerun()
 
 elif st.session_state.sidebar_page == "finance":
@@ -132,6 +139,14 @@ elif st.session_state.sidebar_page == "drink":
         st.session_state.sidebar_page = "main"
         st.rerun()
 
+elif st.session_state.sidebar_page == "tools":
+    if st.sidebar.button("⏳ 計日器"):
+        st.session_state.page = "tools_計日器"
+        st.rerun()
+    if st.sidebar.button("🔙 回主選單"):
+        st.session_state.sidebar_page = "main"
+        st.rerun()
+
 
 # --- 頁面切換 ---
 if st.session_state.sidebar_page == "main":
@@ -183,3 +198,9 @@ elif st.session_state.sidebar_page == "drink":
         drink_main_page()
     elif st.session_state.page == "drink_月曆檢視":
         drink_calendar_page()
+
+elif st.session_state.sidebar_page == "tools":
+    if st.session_state.page == "tools_計日器":
+        day_counter_main_page()
+    if st.session_state.page == "tools_新增計日器":
+        add_day_counter(st.session_state.counter_id)
