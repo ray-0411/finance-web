@@ -23,13 +23,19 @@ def drink_main_page():
     conn = connect_sql()
     df = pd.read_sql("""
         SELECT m.id, m.drink_date, m.drink_time, m.amount, m.note,
-            c.name AS category_name, p.name AS parent_name, gp.name AS grand_name,
-            COALESCE(gp.name, p.name, c.name) AS root_name,
-            COALESCE(gp.weight,1) * COALESCE(p.weight,1) * COALESCE(c.weight,1) AS score
+            c.name AS category_name, 
+            p.name AS parent_name, 
+            gp.name AS grand_name,
+            ggp.name AS great_name,
+            
+            COALESCE(ggp.name, gp.name, p.name, c.name) AS root_name,
+            COALESCE(ggp.weight,1) * COALESCE(gp.weight,1) * COALESCE(p.weight,1) * COALESCE(c.weight,1) AS score
+            
         FROM drink_main m
         LEFT JOIN drink_category c ON m.category_id = c.id
         LEFT JOIN drink_category p ON c.parent_id = p.id
         LEFT JOIN drink_category gp ON p.parent_id = gp.id
+        LEFT JOIN drink_category ggp ON gp.parent_id = ggp.id
         WHERE m.drink_date BETWEEN %s AND %s
         ORDER BY m.drink_date DESC, m.drink_time DESC
     """, conn, params=(start_date, end_date))

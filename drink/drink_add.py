@@ -37,29 +37,35 @@ def drink_add_page():
         else:
             drink_time = None
 
-    parent_options = df_cat[df_cat["parent_id"].isna()]
-    parent_name = st.selectbox("type", parent_options["name"].tolist())
+    def select_category(df_cat, max_depth=4):
+        """
+        df_cat: 資料表 (含 id, name, parent_id)
+        max_depth: 最多展開幾層 (例如 4 表示 父→子→孫→曾孫)
+        """
+        current_id = None
+        current_name = None
 
-    parent_id = int(parent_options.loc[parent_options["name"] == parent_name, "id"].iloc[0])
-    child_options = df_cat[df_cat["parent_id"] == parent_id]
+        # 第 0 層：root (parent_id 為空的)
+        options = df_cat[df_cat["parent_id"].isna()]
+        if options.empty:
+            st.error("❌ 沒有任何分類")
+            return None
 
-    if not child_options.empty:
-        if parent_id == 1:
-            child_name = st.selectbox("大小", child_options["name"].tolist())
-            child_id = int(child_options.loc[child_options["name"] == child_name, "id"].iloc[0])
-        else:
-            child_name = st.selectbox("飲料種類", child_options["name"].tolist())
-            child_id = int(child_options.loc[child_options["name"] == child_name, "id"].iloc[0])
-    else:
-        child_id = parent_id
-        child_name = None
+        current_name = st.selectbox(f"第1層", options["name"].tolist())
+        current_id = int(options.loc[options["name"] == current_name, "id"].iloc[0])
 
-    grandchild_options = df_cat[df_cat["parent_id"] == child_id]
-    if not grandchild_options.empty:
-        grandchild_name = st.selectbox("大小", grandchild_options["name"].tolist())
-        category_id = int(grandchild_options.loc[grandchild_options["name"] == grandchild_name, "id"].iloc[0])
-    else:
-        category_id = child_id
+        # 往下找子層
+        for depth in range(2, max_depth + 1):   # 從第2層開始
+            sub_options = df_cat[df_cat["parent_id"] == current_id]
+            if sub_options.empty:
+                break
+            sub_name = st.selectbox(f"第{depth}層", sub_options["name"].tolist())
+            current_id = int(sub_options.loc[sub_options["name"] == sub_name, "id"].iloc[0])
+            current_name = sub_name
+
+        return current_id  # 最後選到的分類 id
+    
+    category_id = select_category(df_cat, max_depth=4)
 
     # --- 🔹 其他輸入 ---
 
@@ -79,4 +85,5 @@ def drink_add_page():
 
         st.success(f"已新增紀錄：{drink_date} {drink_time} - {amount} ml (分類ID={category_id})")
         time.sleep(0.5)
+        st.session_state["page"] = "drink_喝水紀錄"
         st.rerun()
