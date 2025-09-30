@@ -57,8 +57,6 @@ def drink_calendar_page():
     
     
 
-
-
     # ===== 月曆顯示 =====
     st.subheader("🗓 互動月曆")
 
